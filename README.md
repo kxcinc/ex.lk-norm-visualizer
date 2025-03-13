@@ -9,6 +9,7 @@ An interactive visualization tool for Lk-norm boundaries in R² and R³ spaces, 
 - Adjustable k parameter (0.1 to 10.0)
 - Interactive controls for exploring the shapes
 - Export visualizations as PNG and SVG files
+- Automated UI testing with Playwright
 
 ## Live Demo
 
@@ -28,6 +29,8 @@ This project is built with:
 - TypeScript (strict mode)
 - Three.js (via React Three Fiber)
 - Vite
+- Playwright for end-to-end testing
+- Biome for linting and formatting
 
 ### Local Development
 
@@ -49,6 +52,15 @@ bun run format
 
 # Check and fix issues with Biome
 bun run check
+
+# Run UI tests (Chromium and WebKit browsers)
+bun run test
+
+# Run tests with UI
+bun run test:ui
+
+# Run tests in headed mode
+bun run test:headed
 ```
 
 ### Deployment
