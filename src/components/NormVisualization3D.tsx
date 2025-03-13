@@ -1,8 +1,8 @@
-import { OrbitControls, Text } from '@react-three/drei';
-import { Canvas, useFrame } from '@react-three/fiber';
-import { useMemo, useRef } from 'react';
-import * as THREE from 'three';
-import { calculateLkNorm } from '../utils/mathUtils';
+import { OrbitControls, Text } from "@react-three/drei";
+import { Canvas, useFrame } from "@react-three/fiber";
+import { useMemo, useRef } from "react";
+import * as THREE from "three";
+import { calculateLkNorm } from "../utils/mathUtils";
 
 interface LkNormSurfaceProps {
   k: number;
@@ -14,7 +14,6 @@ const LkNormSurface: React.FC<LkNormSurfaceProps> = ({ k }) => {
 
   // Generate the surface geometry
   const geometry = useMemo(() => {
-
     // Parameters for surface generation
     const resolution = 40;
     const geometry = new THREE.IcosahedronGeometry(1, resolution);
@@ -115,13 +114,13 @@ interface NormVisualization3DProps {
 const NormVisualization3D: React.FC<NormVisualization3DProps> = ({ k }) => {
   return (
     <Canvas camera={{ position: [2, 2, 2], fov: 50 }}>
-      <color attach="background" args={['#f8f8f8']} />
+      <color attach="background" args={["#f8f8f8"]} />
       <ambientLight intensity={0.5} />
       <directionalLight position={[10, 10, 5]} intensity={1.5} />
       <LkNormSurface k={k} />
       <Axes />
       <OrbitControls enablePan={true} enableZoom={true} enableRotate={true} />
-      <gridHelper args={[2, 10, '#888888', '#444444']} position={[0, -1.25, 0]} />
+      <gridHelper args={[2, 10, "#888888", "#444444"]} position={[0, -1.25, 0]} />
       <Text position={[0, 1.6, 0]} fontSize={0.15} color="black" anchorX="center" anchorY="top">
         {`L${k.toFixed(1)}-norm boundary in R³`}
       </Text>

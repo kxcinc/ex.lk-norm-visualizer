@@ -1,18 +1,18 @@
 /// <reference types="vite/client" />
 
-declare module '*.svg' {
-  import type * as React from 'react';
+declare module "*.svg" {
+  import type * as React from "react";
   export const ReactComponent: React.FC<React.SVGProps<SVGSVGElement>>;
   const src: string;
   export default src;
 }
 
-declare module '*.css' {
+declare module "*.css" {
   const classes: { [key: string]: string };
   export default classes;
 }
 
-declare module '@react-three/drei' {
+declare module "@react-three/drei" {
   interface TextProps {
     children: React.ReactNode;
     position?: [number, number, number];

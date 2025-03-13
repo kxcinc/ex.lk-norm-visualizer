@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
-import { calculateLkNorm } from '../utils/mathUtils';
+import { useEffect, useRef, useState } from "react";
+import { calculateLkNorm } from "../utils/mathUtils";
 
 interface NormVisualization2DProps {
   k: number;
@@ -26,9 +26,9 @@ const NormVisualization2D: React.FC<NormVisualization2DProps> = ({ k }) => {
     };
 
     updateSize();
-    window.addEventListener('resize', updateSize);
+    window.addEventListener("resize", updateSize);
 
-    return () => window.removeEventListener('resize', updateSize);
+    return () => window.removeEventListener("resize", updateSize);
   }, []);
 
   // Draw the visualization
@@ -36,7 +36,7 @@ const NormVisualization2D: React.FC<NormVisualization2DProps> = ({ k }) => {
     if (!width || !height || !canvasRef.current) return;
 
     const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
     // Clear canvas
@@ -49,7 +49,7 @@ const NormVisualization2D: React.FC<NormVisualization2DProps> = ({ k }) => {
 
     // Draw axes
     ctx.beginPath();
-    ctx.strokeStyle = '#ccc';
+    ctx.strokeStyle = "#ccc";
     ctx.lineWidth = 1;
 
     // x-axis
@@ -63,9 +63,9 @@ const NormVisualization2D: React.FC<NormVisualization2DProps> = ({ k }) => {
     ctx.stroke();
 
     // Draw unit marks on axes
-    ctx.fillStyle = '#888';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
+    ctx.fillStyle = "#888";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
 
     // x-axis marks
     for (let i = -1; i <= 1; i += 0.5) {
@@ -93,7 +93,7 @@ const NormVisualization2D: React.FC<NormVisualization2DProps> = ({ k }) => {
 
     // Draw the Lk-norm boundary
     ctx.beginPath();
-    ctx.strokeStyle = '#646cff';
+    ctx.strokeStyle = "#646cff";
     ctx.lineWidth = 2;
 
     const numPoints = 360;
@@ -128,14 +128,14 @@ const NormVisualization2D: React.FC<NormVisualization2DProps> = ({ k }) => {
     ctx.stroke();
 
     // Add k value label
-    ctx.fillStyle = '#000';
-    ctx.font = '16px Arial';
-    ctx.textAlign = 'left';
-    ctx.textBaseline = 'top';
+    ctx.fillStyle = "#000";
+    ctx.font = "16px Arial";
+    ctx.textAlign = "left";
+    ctx.textBaseline = "top";
     ctx.fillText(`L${k.toFixed(1)}-norm boundary`, 10, 10);
   }, [width, height, k]);
 
-  return <canvas ref={canvasRef} style={{ width: '100%', height: '100%' }} />;
+  return <canvas ref={canvasRef} style={{ width: "100%", height: "100%" }} />;
 };
 
 export default NormVisualization2D;
