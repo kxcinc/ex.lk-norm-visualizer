@@ -14,6 +14,8 @@
     "test": "playwright test",
     "test:ui": "playwright test --ui",
     "test:headed": "playwright test --headed",
+    "test:visual": "playwright test visual.spec.ts",
+    "test:update-snapshots": "playwright test visual.spec.ts --update-snapshots",
     "deploy": "npm run typecheck && npm run lint && vite build && CLOUDFLARE_ACCOUNT_ID=35cf20265bc941f70837556f95d19853 npx wrangler pages deploy dist --project-name=\"lk-norm-visualizer\"",
     "deploy-live": "npm run typecheck && npm run lint && vite build && CLOUDFLARE_ACCOUNT_ID=35cf20265bc941f70837556f95d19853 npx wrangler pages deploy dist --project-name=\"lk-norm-visualizer\" --branch=main"
   },
