@@ -12,10 +12,22 @@ export default defineConfig({
     trace: "on-first-retry",
     screenshot: "only-on-failure",
   },
+  // Snapshot configuration for visual testing
+  expect: {
+    toHaveScreenshot: {
+      maxDiffPixelRatio: 0.001,
+      threshold: 0.1,
+      animations: "disabled",
+    },
+    timeout: 15000,          // Increase timeout for screenshot comparisons
+  },
   projects: [
     {
       name: "chromium",
-      use: { ...devices["Desktop Chrome"] },
+      use: {
+        ...devices["Desktop Chrome"],
+        viewport: { width: 1280, height: 720 } // Fixed viewport for consistency
+      },
     },
     // Firefox is excluded due to inconsistent behavior with input range events
     // {
@@ -24,7 +36,10 @@ export default defineConfig({
     // },
     {
       name: "webkit",
-      use: { ...devices["Desktop Safari"] },
+      use: {
+        ...devices["Desktop Safari"],
+        viewport: { width: 1280, height: 720 } // Fixed viewport for consistency
+      },
     },
   ],
   webServer: {

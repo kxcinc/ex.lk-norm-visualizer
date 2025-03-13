@@ -1,4 +1,4 @@
-import { type ChangeEvent, useState } from "react";
+import { type ChangeEvent, useState, useEffect } from "react";
 import "./App.css";
 import NormVisualization2D from "./components/NormVisualization2D";
 import NormVisualization3D from "./components/NormVisualization3D";
@@ -8,6 +8,20 @@ type TabType = "2d" | "3d";
 function App(): React.ReactNode {
   const [k, setK] = useState<number>(2);
   const [activeTab, setActiveTab] = useState<TabType>("2d");
+  const [fixedRotation, setFixedRotation] = useState<{ x: number, y: number, z: number } | undefined>(undefined);
+  const [isRotationFixed, setIsRotationFixed] = useState<boolean>(false);
+
+  // Toggle fixed rotation
+  const toggleFixedRotation = (): void => {
+    if (isRotationFixed) {
+      // Release fixed rotation
+      setFixedRotation(undefined);
+    } else {
+      // Fix rotation to a pleasing angle
+      setFixedRotation({ x: 0.5, y: 0.5, z: 0 });
+    }
+    setIsRotationFixed(!isRotationFixed);
+  };
 
   const handleKChange = (e: ChangeEvent<HTMLInputElement>): void => {
     const value = Number.parseFloat(e.target.value);
@@ -35,6 +49,25 @@ function App(): React.ReactNode {
           value={k}
           onChange={handleKChange}
         />
+
+        {activeTab === "3d" && (
+          <button
+            type="button"
+            onClick={toggleFixedRotation}
+            style={{
+              marginLeft: "20px",
+              padding: "8px 12px",
+              background: isRotationFixed ? "#4caf50" : "#646cff",
+              color: "white",
+              border: "none",
+              borderRadius: "4px",
+              cursor: "pointer",
+            }}
+            data-testid="toggle-rotation-button"
+          >
+            {isRotationFixed ? "Enable Rotation" : "Fix Rotation"}
+          </button>
+        )}
       </div>
 
       <div className="tabs">
@@ -54,8 +87,15 @@ function App(): React.ReactNode {
         </button>
       </div>
 
-      <div className="visualization-container">
-        {activeTab === "2d" ? <NormVisualization2D k={k} /> : <NormVisualization3D k={k} />}
+      <div className="visualization-container" style={activeTab === "2d" ? undefined : {
+        width: "600px",
+        height: "500px",
+      }}>
+        {activeTab === "2d" ? (
+          <NormVisualization2D k={k} />
+        ) : (
+          <NormVisualization3D k={k} fixedRotation={isRotationFixed ? fixedRotation : undefined} />
+        )}
       </div>
     </div>
   );
