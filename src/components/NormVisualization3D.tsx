@@ -2,8 +2,8 @@ import { OrbitControls, Text } from "@react-three/drei";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { useCallback, useMemo, useRef } from "react";
 import * as THREE from "three";
-import { calculateLkNorm } from "../utils/mathUtils";
 import { exportThreeSceneToPng } from "../utils/exportUtils";
+import { calculateLkNorm } from "../utils/mathUtils";
 
 interface LkNormSurfaceProps {
   k: number;
@@ -12,16 +12,16 @@ interface LkNormSurfaceProps {
 // Component to handle screenshot export
 const SceneExporter: React.FC<{ k: number }> = ({ k }) => {
   const { gl, scene, camera } = useThree();
-  
+
   // Function to export the current view as PNG
   const exportScene = useCallback(() => {
     exportThreeSceneToPng(gl, scene, camera, `lk_norm_${k.toFixed(1)}_visualization_3d`);
   }, [gl, scene, camera, k]);
-  
+
   // Register in parent window to be called from outside the Canvas
   // @ts-ignore
   window.exportThreeScene = exportScene;
-  
+
   return null;
 };
 
@@ -153,16 +153,16 @@ const NormVisualization3D: React.FC<NormVisualization3DProps> = ({ k }) => {
         <SceneExporter k={k} />
       </Canvas>
       <div style={{ position: "absolute", top: "10px", right: "10px" }}>
-        <button 
+        <button
           type="button"
           onClick={handleExportPng}
-          style={{ 
+          style={{
             padding: "8px 12px",
             background: "#646cff",
             color: "white",
             border: "none",
             borderRadius: "4px",
-            cursor: "pointer"
+            cursor: "pointer",
           }}
         >
           Export PNG

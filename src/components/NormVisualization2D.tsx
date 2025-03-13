@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { calculateLkNorm } from "../utils/mathUtils";
 import { createSvgFromPoints, exportToPng, exportToSvg } from "../utils/exportUtils";
+import { calculateLkNorm } from "../utils/mathUtils";
 
 interface NormVisualization2DProps {
   k: number;
@@ -109,7 +109,7 @@ const NormVisualization2D: React.FC<NormVisualization2DProps> = ({ k }) => {
       // Scale the point to be on the Lk norm boundary
       x *= scaleFactor;
       y *= scaleFactor;
-      
+
       // Store the normalized point
       points.push([x, y]);
     }
@@ -121,7 +121,7 @@ const NormVisualization2D: React.FC<NormVisualization2DProps> = ({ k }) => {
     ctx.beginPath();
     ctx.strokeStyle = "#646cff";
     ctx.lineWidth = 2;
-    
+
     let first = true;
     for (const [x, y] of points) {
       // Convert to canvas coordinates
@@ -146,17 +146,17 @@ const NormVisualization2D: React.FC<NormVisualization2DProps> = ({ k }) => {
     ctx.textBaseline = "top";
     ctx.fillText(`L${k.toFixed(1)}-norm boundary`, 10, 10);
   }, [width, height, k]);
-  
+
   useEffect(() => {
     draw();
   }, [draw]);
-  
+
   // Export functions
   const handleExportPng = (): void => {
     if (!canvasRef.current) return;
     exportToPng(canvasRef.current, `lk_norm_${k.toFixed(1)}_visualization`);
   };
-  
+
   const handleExportSvg = (): void => {
     if (boundaryPoints.length === 0) return;
     const svgString = createSvgFromPoints(boundaryPoints, width, height, k);
@@ -167,31 +167,31 @@ const NormVisualization2D: React.FC<NormVisualization2DProps> = ({ k }) => {
     <div style={{ position: "relative", width: "100%", height: "100%" }}>
       <canvas ref={canvasRef} style={{ width: "100%", height: "100%" }} />
       <div style={{ position: "absolute", top: "10px", right: "10px" }}>
-        <button 
+        <button
           type="button"
           onClick={handleExportPng}
-          style={{ 
+          style={{
             marginRight: "10px",
             padding: "8px 12px",
             background: "#646cff",
             color: "white",
             border: "none",
             borderRadius: "4px",
-            cursor: "pointer"
+            cursor: "pointer",
           }}
         >
           Export PNG
         </button>
-        <button 
+        <button
           type="button"
           onClick={handleExportSvg}
-          style={{ 
+          style={{
             padding: "8px 12px",
             background: "#646cff",
             color: "white",
             border: "none",
             borderRadius: "4px",
-            cursor: "pointer"
+            cursor: "pointer",
           }}
         >
           Export SVG
