@@ -11,7 +11,8 @@
     "check": "biome check --apply .",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
-    "deploy": "tsc && vite build && CLOUDFLARE_ACCOUNT_ID=35cf20265bc941f70837556f95d19853 npx wrangler pages deploy dist --project-name=\"lk-norm-visualizer\" --branch=main"
+    "deploy": "npm run typecheck && npm run lint && vite build && CLOUDFLARE_ACCOUNT_ID=35cf20265bc941f70837556f95d19853 npx wrangler pages deploy dist --project-name=\"lk-norm-visualizer\"",
+    "deploy-live": "npm run typecheck && npm run lint && vite build && CLOUDFLARE_ACCOUNT_ID=35cf20265bc941f70837556f95d19853 npx wrangler pages deploy dist --project-name=\"lk-norm-visualizer\" --branch=main"
   },
   "dependencies": {
     "@react-three/drei": "^10.0.4",
