@@ -13,16 +13,13 @@ async function stabilize3DVisualization(page: any) {
   // Check if the fix rotation button exists (we're in 3D mode)
   const fixRotationButton = page.locator("[data-testid='toggle-rotation-button']");
   const buttonVisible = await fixRotationButton.isVisible().catch(() => false);
-  
+
   if (buttonVisible) {
     // Click the button to fix rotation
     await fixRotationButton.click();
-    
-    // Wait for rotation to stabilize
-    await page.waitForTimeout(2000);
-    
+
     // Force a small wait to ensure any animations or transitions are complete
-    await page.evaluate(() => new Promise(resolve => setTimeout(resolve, 1000)));
+    await page.evaluate(() => new Promise(resolve => setTimeout(resolve, 250)));
   }
 }
 
@@ -36,7 +33,7 @@ async function setSliderValue(page: any, value: number) {
   }, value);
 
   // Wait for visualization to update
-  await page.waitForTimeout(1000);
+  await page.waitForTimeout(250);
 
   // Try to verify k value was set correctly, but don't block if elements don't exist
   try {
@@ -80,7 +77,7 @@ test.describe("Visual Regression Testing", () => {
       await setSliderValue(page, k);
 
       // Wait for visualization to render completely
-      await page.waitForTimeout(1000);
+      await page.waitForTimeout(250);
 
       // Take screenshot of the canvas
       const canvas = page.locator("canvas").first();
@@ -100,10 +97,7 @@ test.describe("Visual Regression Testing", () => {
       }
 
       // Compare with baseline snapshot
-      await expect(canvas).toHaveScreenshot(`2d-norm-k${k}.png`, {
-        maxDiffPixelRatio: 0.05,
-        threshold: 0.2
-      });
+      await expect(canvas).toHaveScreenshot(`2d-norm-k${k}.png`);
     });
   }
 
@@ -122,9 +116,6 @@ test.describe("Visual Regression Testing", () => {
 
       // Stabilize the 3D visualization by fixing rotation
       await stabilize3DVisualization(page);
-      
-      // Wait longer for 3D visualization to render completely
-      await page.waitForTimeout(3000);
 
       // Take screenshot of the canvas (Three.js)
       const canvas = page.locator("canvas").first();
@@ -143,15 +134,8 @@ test.describe("Visual Regression Testing", () => {
         console.warn("Could not verify 3D k value before screenshot", error);
       }
 
-      // Wait a bit longer for any animations to completely stop
-      await page.waitForTimeout(1000);
-
       // Compare with baseline snapshot
-      await expect(canvas).toHaveScreenshot(`3d-norm-k${k}.png`, {
-        maxDiffPixelRatio: 0.07, // Allow 7% pixel difference for 3D renders
-        threshold: 0.3,          // Higher threshold for 3D
-        timeout: 10000           // Longer timeout for 3D
-      });
+      await expect(canvas).toHaveScreenshot(`3d-norm-k${k}.png`);
     });
   }
 });

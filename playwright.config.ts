@@ -15,9 +15,9 @@ export default defineConfig({
   // Snapshot configuration for visual testing
   expect: {
     toHaveScreenshot: {
-      maxDiffPixelRatio: 0.05, // Allow up to 5% of pixels to be different
-      threshold: 0.2,         // Pixel difference threshold
-      animations: "disabled", // Disable animations for consistent screenshots
+      maxDiffPixelRatio: 0.001,
+      threshold: 0.1,
+      animations: "disabled",
     },
     timeout: 15000,          // Increase timeout for screenshot comparisons
   },
