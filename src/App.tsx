@@ -1,13 +1,15 @@
-import { useState } from 'react'
+import { useState, ChangeEvent } from 'react'
 import './App.css'
 import NormVisualization2D from './components/NormVisualization2D'
 import NormVisualization3D from './components/NormVisualization3D'
 
-function App() {
-  const [k, setK] = useState(2)
-  const [activeTab, setActiveTab] = useState('2d')
+type TabType = '2d' | '3d'
 
-  const handleKChange = (e) => {
+function App(): React.ReactNode {
+  const [k, setK] = useState<number>(2)
+  const [activeTab, setActiveTab] = useState<TabType>('2d')
+
+  const handleKChange = (e: ChangeEvent<HTMLInputElement>): void => {
     const value = parseFloat(e.target.value)
     setK(value)
   }

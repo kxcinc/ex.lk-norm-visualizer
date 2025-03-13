@@ -24,6 +24,7 @@ This project is open source and available on GitHub:
 
 This project is built with:
 - React 19
+- TypeScript (strict mode)
 - Three.js (via React Three Fiber)
 - Vite
 
@@ -35,6 +36,12 @@ bun install
 
 # Start development server
 bun run dev
+
+# Type checking
+bun run typecheck
+
+# Lint code
+bun run lint
 ```
 
 ### Deployment

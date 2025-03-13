@@ -3,14 +3,18 @@ import { Canvas, useFrame } from '@react-three/fiber'
 import { OrbitControls, Text } from '@react-three/drei'
 import * as THREE from 'three'
 
+interface LkNormSurfaceProps {
+  k: number;
+}
+
 // Helper component to generate the Lk-norm boundary in 3D
-const LkNormSurface = ({ k }) => {
-  const meshRef = useRef()
+const LkNormSurface: React.FC<LkNormSurfaceProps> = ({ k }) => {
+  const meshRef = useRef<THREE.Mesh>(null)
   
   // Generate the surface geometry
   const geometry = useMemo(() => {
     // Calculate Lk-norm for a point
-    const calculateLkNorm = (x, y, z, k) => {
+    const calculateLkNorm = (x: number, y: number, z: number, k: number): number => {
       return Math.pow(
         Math.pow(Math.abs(x), k) + 
         Math.pow(Math.abs(y), k) + 
@@ -27,9 +31,9 @@ const LkNormSurface = ({ k }) => {
     const positions = geometry.attributes.position.array
     
     for (let i = 0; i < positions.length; i += 3) {
-      const x = positions[i]
-      const y = positions[i + 1]
-      const z = positions[i + 2]
+      const x = positions[i] as number
+      const y = positions[i + 1] as number
+      const z = positions[i + 2] as number
       
       // Calculate the current norm value
       const normValue = calculateLkNorm(x, y, z, k)
@@ -37,9 +41,9 @@ const LkNormSurface = ({ k }) => {
       // Scale to be on the boundary where ||x||^k_k = 1
       const scaleFactor = 1 / normValue
       
-      positions[i] *= scaleFactor
-      positions[i + 1] *= scaleFactor
-      positions[i + 2] *= scaleFactor
+      positions[i] = x * scaleFactor
+      positions[i + 1] = y * scaleFactor
+      positions[i + 2] = z * scaleFactor
     }
     
     geometry.attributes.position.needsUpdate = true
@@ -68,7 +72,7 @@ const LkNormSurface = ({ k }) => {
 }
 
 // Axis component
-const Axes = () => {
+const Axes: React.FC = () => {
   return (
     <group>
       {/* X-axis */}
@@ -101,8 +105,12 @@ const Axes = () => {
   )
 }
 
+interface NormVisualization3DProps {
+  k: number;
+}
+
 // Main 3D visualization component
-const NormVisualization3D = ({ k }) => {
+const NormVisualization3D: React.FC<NormVisualization3DProps> = ({ k }) => {
   return (
     <Canvas camera={{ position: [2, 2, 2], fov: 50 }}>
       <color attach="background" args={['#f8f8f8']} />

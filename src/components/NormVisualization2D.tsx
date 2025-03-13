@@ -1,20 +1,28 @@
 import { useState, useEffect, useRef } from 'react'
 
-const NormVisualization2D = ({ k }) => {
-  const canvasRef = useRef(null)
-  const [width, setWidth] = useState(0)
-  const [height, setHeight] = useState(0)
+interface NormVisualization2DProps {
+  k: number;
+}
+
+const NormVisualization2D: React.FC<NormVisualization2DProps> = ({ k }) => {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null)
+  const [width, setWidth] = useState<number>(0)
+  const [height, setHeight] = useState<number>(0)
 
   // Calculate Lk-norm for a point (x, y)
-  const calculateLkNorm = (x, y, k) => {
+  const calculateLkNorm = (x: number, y: number, k: number): number => {
     return Math.pow(Math.pow(Math.abs(x), k) + Math.pow(Math.abs(y), k), 1/k)
   }
 
   // Setup canvas and resize handler
   useEffect(() => {
     const canvas = canvasRef.current
-    const updateSize = () => {
-      const rect = canvas.parentElement.getBoundingClientRect()
+    if (!canvas) return
+
+    const updateSize = (): void => {
+      const rect = canvas.parentElement?.getBoundingClientRect()
+      if (!rect) return
+
       setWidth(rect.width)
       setHeight(rect.height)
       canvas.width = rect.width
@@ -33,6 +41,7 @@ const NormVisualization2D = ({ k }) => {
     
     const canvas = canvasRef.current
     const ctx = canvas.getContext('2d')
+    if (!ctx) return
     
     // Clear canvas
     ctx.clearRect(0, 0, width, height)
