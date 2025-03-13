@@ -8,6 +8,7 @@ An interactive visualization tool for Lk-norm boundaries in R² and R³ spaces, 
 - 3D visualization of Lk-norm boundaries in R³
 - Adjustable k parameter (0.1 to 10.0)
 - Interactive controls for exploring the shapes
+- Export visualizations as PNG and SVG files
 
 ## Live Demo
 
