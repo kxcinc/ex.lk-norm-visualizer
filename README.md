@@ -8,8 +8,10 @@ An interactive visualization tool for Lk-norm boundaries in R² and R³ spaces, 
 - 3D visualization of Lk-norm boundaries in R³
 - Adjustable k parameter (0.1 to 10.0)
 - Interactive controls for exploring the shapes
+- Optional fixed rotation for 3D visualization 
 - Export visualizations as PNG and SVG files
 - Automated UI testing with Playwright
+- Visual regression testing for consistent rendering
 
 ## Live Demo
 
@@ -30,7 +32,17 @@ This project is built with:
 - Three.js (via React Three Fiber)
 - Vite
 - Playwright for end-to-end testing
+- Visual regression testing for UI consistency
 - Biome for linting and formatting
+
+### Visual Regression Testing
+
+The project includes visual regression testing to ensure that the visualizations render consistently. These tests:
+
+- Capture screenshots of both 2D and 3D visualizations with different k values
+- Compare new renders against baseline snapshots to catch unintended visual changes
+- Use fixed rotation in 3D mode for consistent comparison
+- Include tolerance thresholds to handle minor rendering differences
 
 ### Local Development
 
@@ -61,6 +73,18 @@ bun run test:ui
 
 # Run tests in headed mode
 bun run test:headed
+
+# Run visual regression tests
+bun run test:visual
+
+# Run visual tests in headed mode
+bun run test:visual -- --headed
+
+# Update visual test snapshots
+bun run test:update-snapshots
+
+# Debug visual tests
+bun run test:visual -- --debug
 ```
 
 ### Deployment
