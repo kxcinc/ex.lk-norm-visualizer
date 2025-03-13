@@ -53,8 +53,11 @@ bun run check
 ### Deployment
 
 ```bash
-# Build and deploy to Cloudflare Pages
+# Build and deploy to preview environment (default branch)
 bun run deploy
+
+# Build and deploy to production environment (main branch)
+bun run deploy-live
 
 # Push to GitHub repository
 git push kxc main
