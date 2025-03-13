@@ -1,12 +1,61 @@
-# React + Vite
+# Lk-Norm Visualizer
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+An interactive visualization tool for Lk-norm boundaries in R² and R³ spaces, where ||x||^k_k ≤ 1.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- 2D visualization of Lk-norm boundaries in R²
+- 3D visualization of Lk-norm boundaries in R³
+- Adjustable k parameter (0.1 to 10.0)
+- Interactive controls for exploring the shapes
 
-## Expanding the ESLint configuration
+## Live Demo
 
-If you are developing a production application, we recommend using TypeScript and enable type-aware lint rules. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+The application is available at:
+- [lk-norm-visualizer.pages.dev](https://lk-norm-visualizer.pages.dev) (Cloudflare Pages)
+- [lk-norm-visualizer.ex.bykxc.app](https://lk-norm-visualizer.ex.bykxc.app) (Custom Domain)
+
+## Repository
+
+This project is open source and available on GitHub:
+- [github.com/kxcinc/ex.lk-norm-visualizer](https://github.com/kxcinc/ex.lk-norm-visualizer)
+
+## Development
+
+This project is built with:
+- React 19
+- Three.js (via React Three Fiber)
+- Vite
+
+### Local Development
+
+```bash
+# Install dependencies
+bun install
+
+# Start development server
+bun run dev
+```
+
+### Deployment
+
+```bash
+# Build and deploy to Cloudflare Pages
+bun run deploy
+
+# Push to GitHub repository
+git push kxc main
+```
+
+## Math Background
+
+The Lk-norm of a vector x in n-dimensional space is defined as:
+
+||x||_k = (|x₁|^k + |x₂|^k + ... + |xₙ|^k)^(1/k)
+
+This visualization shows the boundary where ||x||^k_k = 1 for different values of k.
+
+Special cases:
+- k=1: Manhattan/Taxicab norm (L1)
+- k=2: Euclidean norm (L2)
+- k→∞: Maximum/Infinity norm (L∞)
