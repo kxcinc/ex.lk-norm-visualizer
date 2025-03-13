@@ -8,6 +8,24 @@ if (!fs.existsSync(snapshotsDir)) {
   fs.mkdirSync(snapshotsDir, { recursive: true });
 }
 
+// Helper function to ensure 3D visualization is stable for screenshots
+async function stabilize3DVisualization(page: any) {
+  // Check if the fix rotation button exists (we're in 3D mode)
+  const fixRotationButton = page.locator("[data-testid='toggle-rotation-button']");
+  const buttonVisible = await fixRotationButton.isVisible().catch(() => false);
+  
+  if (buttonVisible) {
+    // Click the button to fix rotation
+    await fixRotationButton.click();
+    
+    // Wait for rotation to stabilize
+    await page.waitForTimeout(2000);
+    
+    // Force a small wait to ensure any animations or transitions are complete
+    await page.evaluate(() => new Promise(resolve => setTimeout(resolve, 1000)));
+  }
+}
+
 // Helper function to set slider to a specific value and verify it took effect
 async function setSliderValue(page: any, value: number) {
   const slider = page.locator("input[type='range']");
@@ -102,6 +120,9 @@ test.describe("Visual Regression Testing", () => {
       // Set k value
       await setSliderValue(page, k);
 
+      // Stabilize the 3D visualization by fixing rotation
+      await stabilize3DVisualization(page);
+      
       // Wait longer for 3D visualization to render completely
       await page.waitForTimeout(3000);
 
