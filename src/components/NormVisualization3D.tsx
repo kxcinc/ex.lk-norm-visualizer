@@ -1,12 +1,20 @@
 import { OrbitControls, Text } from "@react-three/drei";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { useCallback, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import { exportThreeSceneToPng } from "../utils/exportUtils";
 import { calculateLkNorm } from "../utils/mathUtils";
 
+// Helper function to detect test environment
+const isTestEnvironment = (): boolean => {
+  return typeof window !== 'undefined' &&
+    (window.navigator.userAgent.includes("Playwright") ||
+     window.navigator.userAgent.includes("HeadlessChrome"));
+};
+
 interface LkNormSurfaceProps {
   k: number;
+  fixedRotation?: { x?: number; y?: number; z?: number };
 }
 
 // Component to handle screenshot export
@@ -26,7 +34,7 @@ const SceneExporter: React.FC<{ k: number }> = ({ k }) => {
 };
 
 // Helper component to generate the Lk-norm boundary in 3D
-const LkNormSurface: React.FC<LkNormSurfaceProps> = ({ k }) => {
+const LkNormSurface: React.FC<LkNormSurfaceProps> = ({ k, fixedRotation }) => {
   const meshRef = useRef<THREE.Mesh>(null);
 
   // Generate the surface geometry
@@ -60,9 +68,20 @@ const LkNormSurface: React.FC<LkNormSurfaceProps> = ({ k }) => {
     return geometry;
   }, [k]);
 
-  // Slowly rotate the mesh
+  // Effect to set fixed rotation once when it changes
+  useEffect(() => {
+    if (meshRef.current && fixedRotation) {
+      // Set fixed rotation values
+      if (fixedRotation.x !== undefined) meshRef.current.rotation.x = fixedRotation.x;
+      if (fixedRotation.y !== undefined) meshRef.current.rotation.y = fixedRotation.y;
+      if (fixedRotation.z !== undefined) meshRef.current.rotation.z = fixedRotation.z;
+    }
+  }, [fixedRotation]);
+
+  // Apply rotation only if not fixed
   useFrame(() => {
-    if (meshRef.current) {
+    if (meshRef.current && !fixedRotation) {
+      // Only auto-rotate when rotation is not fixed
       meshRef.current.rotation.y += 0.001;
     }
   });
@@ -125,10 +144,11 @@ const Axes: React.FC = () => {
 
 interface NormVisualization3DProps {
   k: number;
+  fixedRotation?: { x?: number; y?: number; z?: number };
 }
 
 // Main 3D visualization component
-const NormVisualization3D: React.FC<NormVisualization3DProps> = ({ k }) => {
+const NormVisualization3D: React.FC<NormVisualization3DProps> = ({ k, fixedRotation }) => {
   const handleExportPng = () => {
     // @ts-ignore
     if (typeof window.exportThreeScene === "function") {
@@ -138,14 +158,30 @@ const NormVisualization3D: React.FC<NormVisualization3DProps> = ({ k }) => {
   };
 
   return (
-    <div style={{ position: "relative", width: "100%", height: "100%" }}>
-      <Canvas camera={{ position: [2, 2, 2], fov: 50 }}>
+    <div style={{
+      position: "relative",
+      width: "100%",
+      height: "100%",
+      display: "block",  // Ensure consistent display
+      overflow: "hidden" // Prevent scrollbars during resize
+    }}>
+      <Canvas
+        camera={{ position: [2, 2, 2], fov: 50 }}
+        style={{ width: "100%", height: "100%" }} // Ensure canvas fills container
+        resize={{ debounce: 200 }} // Add debounce to resize for smoother transitions
+        frameloop={fixedRotation ? "demand" : "always"} // Only render when needed if rotation is fixed
+      >
         <color attach="background" args={["#f8f8f8"]} />
         <ambientLight intensity={0.5} />
         <directionalLight position={[10, 10, 5]} intensity={1.5} />
-        <LkNormSurface k={k} />
+        <LkNormSurface k={k} fixedRotation={fixedRotation} />
         <Axes />
-        <OrbitControls enablePan={true} enableZoom={true} enableRotate={true} />
+        <OrbitControls
+          enablePan={true}
+          enableZoom={true}
+          enableRotate={fixedRotation === undefined} // Disable rotation controls if fixedRotation is provided
+          makeDefault // Make this the default controls
+        />
         <gridHelper args={[2, 10, "#888888", "#444444"]} position={[0, -1.25, 0]} />
         <Text position={[0, 1.6, 0]} fontSize={0.15} color="black" anchorX="center" anchorY="top">
           {`L${k.toFixed(1)}-norm boundary in R³`}
