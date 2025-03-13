@@ -16,7 +16,15 @@
       },
       "style": {
         "noNegationElse": "error",
-        "useShorthandArrayType": "error"
+        "useShorthandArrayType": "error",
+        "noCommaOperator": "off",
+        "noParameterAssign": "off"
+      },
+      "complexity": {
+        "noForEach": "off"
+      },
+      "suspicious": {
+        "noAssignInExpressions": "off"
       }
     }
   },
@@ -35,6 +43,6 @@
   },
   "files": {
     "maxSize": 2000000,
-    "ignore": ["dist/**", "node_modules/**"]
+    "ignore": ["dist/**", "node_modules/**", "test-results/**"]
   }
 }
