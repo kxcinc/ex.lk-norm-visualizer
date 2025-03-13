@@ -53,7 +53,7 @@ bun run format
 # Check and fix issues with Biome
 bun run check
 
-# Run UI tests
+# Run UI tests (Chromium and WebKit browsers)
 bun run test
 
 # Run tests with UI

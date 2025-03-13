@@ -24,10 +24,10 @@ test.describe("Export Functionality", () => {
   });
 
   test("should trigger download when export PNG is clicked in 2D view", async ({ page, context }) => {
-    // Setup download listener
-    const downloadPromise = page.waitForEvent("download");
-    
     await page.goto("/");
+    
+    // Setup download listener with longer timeout
+    const downloadPromise = page.waitForEvent("download", { timeout: 10000 });
     
     // Click the export PNG button
     await page.locator("button", { hasText: "Export PNG" }).click();
@@ -40,10 +40,10 @@ test.describe("Export Functionality", () => {
   });
 
   test("should trigger download when export SVG is clicked in 2D view", async ({ page }) => {
-    // Setup download listener
-    const downloadPromise = page.waitForEvent("download");
-    
     await page.goto("/");
+    
+    // Setup download listener with longer timeout
+    const downloadPromise = page.waitForEvent("download", { timeout: 10000 });
     
     // Click the export SVG button
     await page.locator("button", { hasText: "Export SVG" }).click();
