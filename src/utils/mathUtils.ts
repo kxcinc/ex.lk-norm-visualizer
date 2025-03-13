@@ -1,14 +1,31 @@
 /**
+ * Point in 2D space
+ */
+export interface Point2D {
+  x: number;
+  y: number;
+}
+
+/**
+ * Point in 3D space
+ */
+export interface Point3D {
+  x: number;
+  y: number;
+  z: number;
+}
+
+/**
  * Calculates the Lk-norm of a vector
  * 
  * The Lk-norm is defined as:
  * ||x||_k = (|x_1|^k + |x_2|^k + ... + |x_n|^k)^(1/k)
  * 
- * @param {Array<number>} vector - The input vector
- * @param {number} k - The norm parameter
- * @returns {number} The Lk-norm value
+ * @param vector - The input vector
+ * @param k - The norm parameter
+ * @returns The Lk-norm value
  */
-export const calculateLkNorm = (vector, k) => {
+export const calculateLkNorm = (vector: number[], k: number): number => {
   // Special case for infinity norm
   if (k === Infinity) {
     return Math.max(...vector.map(x => Math.abs(x)))
@@ -22,12 +39,12 @@ export const calculateLkNorm = (vector, k) => {
 /**
  * Generates points on the Lk-norm boundary in 2D
  * 
- * @param {number} k - The norm parameter
- * @param {number} numPoints - Number of points to generate
- * @returns {Array<{x: number, y: number}>} Array of points on the boundary
+ * @param k - The norm parameter
+ * @param numPoints - Number of points to generate
+ * @returns Array of points on the boundary
  */
-export const generateLkNormBoundary2D = (k, numPoints = 360) => {
-  const points = []
+export const generateLkNormBoundary2D = (k: number, numPoints: number = 360): Point2D[] => {
+  const points: Point2D[] = []
   
   for (let angle = 0; angle < 2 * Math.PI; angle += (2 * Math.PI) / numPoints) {
     // Start with a point on the unit circle
@@ -50,12 +67,12 @@ export const generateLkNormBoundary2D = (k, numPoints = 360) => {
 /**
  * Converts spherical coordinates to Cartesian coordinates
  * 
- * @param {number} r - Radius
- * @param {number} theta - Azimuthal angle (0 to 2π)
- * @param {number} phi - Polar angle (0 to π)
- * @returns {{x: number, y: number, z: number}} Cartesian coordinates
+ * @param r - Radius
+ * @param theta - Azimuthal angle (0 to 2π)
+ * @param phi - Polar angle (0 to π)
+ * @returns Cartesian coordinates
  */
-export const sphericalToCartesian = (r, theta, phi) => {
+export const sphericalToCartesian = (r: number, theta: number, phi: number): Point3D => {
   return {
     x: r * Math.sin(phi) * Math.cos(theta),
     y: r * Math.sin(phi) * Math.sin(theta),
