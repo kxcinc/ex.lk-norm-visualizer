@@ -1,12 +1,29 @@
 import { OrbitControls, Text } from "@react-three/drei";
-import { Canvas, useFrame } from "@react-three/fiber";
-import { useMemo, useRef } from "react";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { useCallback, useMemo, useRef } from "react";
 import * as THREE from "three";
 import { calculateLkNorm } from "../utils/mathUtils";
+import { exportThreeSceneToPng } from "../utils/exportUtils";
 
 interface LkNormSurfaceProps {
   k: number;
 }
+
+// Component to handle screenshot export
+const SceneExporter: React.FC<{ k: number }> = ({ k }) => {
+  const { gl, scene, camera } = useThree();
+  
+  // Function to export the current view as PNG
+  const exportScene = useCallback(() => {
+    exportThreeSceneToPng(gl, scene, camera, `lk_norm_${k.toFixed(1)}_visualization_3d`);
+  }, [gl, scene, camera, k]);
+  
+  // Register in parent window to be called from outside the Canvas
+  // @ts-ignore
+  window.exportThreeScene = exportScene;
+  
+  return null;
+};
 
 // Helper component to generate the Lk-norm boundary in 3D
 const LkNormSurface: React.FC<LkNormSurfaceProps> = ({ k }) => {
@@ -112,19 +129,46 @@ interface NormVisualization3DProps {
 
 // Main 3D visualization component
 const NormVisualization3D: React.FC<NormVisualization3DProps> = ({ k }) => {
+  const handleExportPng = () => {
+    // @ts-ignore
+    if (typeof window.exportThreeScene === "function") {
+      // @ts-ignore
+      window.exportThreeScene();
+    }
+  };
+
   return (
-    <Canvas camera={{ position: [2, 2, 2], fov: 50 }}>
-      <color attach="background" args={["#f8f8f8"]} />
-      <ambientLight intensity={0.5} />
-      <directionalLight position={[10, 10, 5]} intensity={1.5} />
-      <LkNormSurface k={k} />
-      <Axes />
-      <OrbitControls enablePan={true} enableZoom={true} enableRotate={true} />
-      <gridHelper args={[2, 10, "#888888", "#444444"]} position={[0, -1.25, 0]} />
-      <Text position={[0, 1.6, 0]} fontSize={0.15} color="black" anchorX="center" anchorY="top">
-        {`L${k.toFixed(1)}-norm boundary in R³`}
-      </Text>
-    </Canvas>
+    <div style={{ position: "relative", width: "100%", height: "100%" }}>
+      <Canvas camera={{ position: [2, 2, 2], fov: 50 }}>
+        <color attach="background" args={["#f8f8f8"]} />
+        <ambientLight intensity={0.5} />
+        <directionalLight position={[10, 10, 5]} intensity={1.5} />
+        <LkNormSurface k={k} />
+        <Axes />
+        <OrbitControls enablePan={true} enableZoom={true} enableRotate={true} />
+        <gridHelper args={[2, 10, "#888888", "#444444"]} position={[0, -1.25, 0]} />
+        <Text position={[0, 1.6, 0]} fontSize={0.15} color="black" anchorX="center" anchorY="top">
+          {`L${k.toFixed(1)}-norm boundary in R³`}
+        </Text>
+        <SceneExporter k={k} />
+      </Canvas>
+      <div style={{ position: "absolute", top: "10px", right: "10px" }}>
+        <button 
+          type="button"
+          onClick={handleExportPng}
+          style={{ 
+            padding: "8px 12px",
+            background: "#646cff",
+            color: "white",
+            border: "none",
+            borderRadius: "4px",
+            cursor: "pointer"
+          }}
+        >
+          Export PNG
+        </button>
+      </div>
+    </div>
   );
 };
 

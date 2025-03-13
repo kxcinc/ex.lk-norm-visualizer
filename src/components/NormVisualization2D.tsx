@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { calculateLkNorm } from "../utils/mathUtils";
+import { createSvgFromPoints, exportToPng, exportToSvg } from "../utils/exportUtils";
 
 interface NormVisualization2DProps {
   k: number;
@@ -9,6 +10,7 @@ const NormVisualization2D: React.FC<NormVisualization2DProps> = ({ k }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [width, setWidth] = useState<number>(0);
   const [height, setHeight] = useState<number>(0);
+  const [boundaryPoints, setBoundaryPoints] = useState<[number, number][]>([]);
 
   // Setup canvas and resize handler
   useEffect(() => {
@@ -32,7 +34,7 @@ const NormVisualization2D: React.FC<NormVisualization2DProps> = ({ k }) => {
   }, []);
 
   // Draw the visualization
-  useEffect(() => {
+  const draw = useCallback(() => {
     if (!width || !height || !canvasRef.current) return;
 
     const canvas = canvasRef.current;
@@ -91,13 +93,9 @@ const NormVisualization2D: React.FC<NormVisualization2DProps> = ({ k }) => {
       ctx.stroke();
     }
 
-    // Draw the Lk-norm boundary
-    ctx.beginPath();
-    ctx.strokeStyle = "#646cff";
-    ctx.lineWidth = 2;
-
+    // Calculate points for the Lk-norm boundary
     const numPoints = 360;
-    let first = true;
+    const points: [number, number][] = [];
 
     for (let angle = 0; angle <= 2 * Math.PI; angle += (2 * Math.PI) / numPoints) {
       // Start with a point on the unit circle
@@ -111,7 +109,21 @@ const NormVisualization2D: React.FC<NormVisualization2DProps> = ({ k }) => {
       // Scale the point to be on the Lk norm boundary
       x *= scaleFactor;
       y *= scaleFactor;
+      
+      // Store the normalized point
+      points.push([x, y]);
+    }
 
+    // Store points for SVG export
+    setBoundaryPoints(points);
+
+    // Draw the boundary
+    ctx.beginPath();
+    ctx.strokeStyle = "#646cff";
+    ctx.lineWidth = 2;
+    
+    let first = true;
+    for (const [x, y] of points) {
       // Convert to canvas coordinates
       const canvasX = centerX + x * scale;
       const canvasY = centerY - y * scale;
@@ -134,8 +146,59 @@ const NormVisualization2D: React.FC<NormVisualization2DProps> = ({ k }) => {
     ctx.textBaseline = "top";
     ctx.fillText(`L${k.toFixed(1)}-norm boundary`, 10, 10);
   }, [width, height, k]);
+  
+  useEffect(() => {
+    draw();
+  }, [draw]);
+  
+  // Export functions
+  const handleExportPng = (): void => {
+    if (!canvasRef.current) return;
+    exportToPng(canvasRef.current, `lk_norm_${k.toFixed(1)}_visualization`);
+  };
+  
+  const handleExportSvg = (): void => {
+    if (boundaryPoints.length === 0) return;
+    const svgString = createSvgFromPoints(boundaryPoints, width, height, k);
+    exportToSvg(svgString, `lk_norm_${k.toFixed(1)}_visualization`);
+  };
 
-  return <canvas ref={canvasRef} style={{ width: "100%", height: "100%" }} />;
+  return (
+    <div style={{ position: "relative", width: "100%", height: "100%" }}>
+      <canvas ref={canvasRef} style={{ width: "100%", height: "100%" }} />
+      <div style={{ position: "absolute", top: "10px", right: "10px" }}>
+        <button 
+          type="button"
+          onClick={handleExportPng}
+          style={{ 
+            marginRight: "10px",
+            padding: "8px 12px",
+            background: "#646cff",
+            color: "white",
+            border: "none",
+            borderRadius: "4px",
+            cursor: "pointer"
+          }}
+        >
+          Export PNG
+        </button>
+        <button 
+          type="button"
+          onClick={handleExportSvg}
+          style={{ 
+            padding: "8px 12px",
+            background: "#646cff",
+            color: "white",
+            border: "none",
+            borderRadius: "4px",
+            cursor: "pointer"
+          }}
+        >
+          Export SVG
+        </button>
+      </div>
+    </div>
+  );
 };
 
 export default NormVisualization2D;

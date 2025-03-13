@@ -8,6 +8,7 @@ An interactive visualization tool for Lk-norm boundaries in R² and R³ spaces, 
 - 3D visualization of Lk-norm boundaries in R³
 - Adjustable k parameter (0.1 to 10.0)
 - Interactive controls for exploring the shapes
+- Export visualizations as PNG and SVG files
 
 ## Live Demo
 
@@ -53,8 +54,11 @@ bun run check
 ### Deployment
 
 ```bash
-# Build and deploy to Cloudflare Pages
+# Build and deploy to preview environment (default branch)
 bun run deploy
+
+# Build and deploy to production environment (main branch)
+bun run deploy-live
 
 # Push to GitHub repository
 git push kxc main
