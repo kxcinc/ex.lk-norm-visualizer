@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "lint": "eslint . --ext ts,tsx",
+    "lint": "biome lint .",
+    "format": "biome format . --write",
+    "check": "biome check --apply .",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "deploy": "tsc && vite build && CLOUDFLARE_ACCOUNT_ID=35cf20265bc941f70837556f95d19853 npx wrangler pages deploy dist --project-name=\"lk-norm-visualizer\" --branch=main"
@@ -20,17 +22,11 @@
     "three": "^0.174.0"
   },
   "devDependencies": {
-    "@eslint/js": "^9.21.0",
+    "@biomejs/biome": "^1.9.4",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
     "@types/three": "^0.174.0",
-    "@typescript-eslint/eslint-plugin": "^8.26.1",
-    "@typescript-eslint/parser": "^8.26.1",
     "@vitejs/plugin-react": "^4.3.4",
-    "eslint": "^9.21.0",
-    "eslint-plugin-react-hooks": "^5.1.0",
-    "eslint-plugin-react-refresh": "^0.4.19",
-    "globals": "^15.15.0",
     "typescript": "^5.8.2",
     "vite": "^6.2.0"
   }

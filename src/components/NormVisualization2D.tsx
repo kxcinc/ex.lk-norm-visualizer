@@ -1,151 +1,141 @@
-import { useState, useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react';
+import { calculateLkNorm } from '../utils/mathUtils';
 
 interface NormVisualization2DProps {
   k: number;
 }
 
 const NormVisualization2D: React.FC<NormVisualization2DProps> = ({ k }) => {
-  const canvasRef = useRef<HTMLCanvasElement | null>(null)
-  const [width, setWidth] = useState<number>(0)
-  const [height, setHeight] = useState<number>(0)
-
-  // Calculate Lk-norm for a point (x, y)
-  const calculateLkNorm = (x: number, y: number, k: number): number => {
-    return Math.pow(Math.pow(Math.abs(x), k) + Math.pow(Math.abs(y), k), 1/k)
-  }
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const [width, setWidth] = useState<number>(0);
+  const [height, setHeight] = useState<number>(0);
 
   // Setup canvas and resize handler
   useEffect(() => {
-    const canvas = canvasRef.current
-    if (!canvas) return
+    const canvas = canvasRef.current;
+    if (!canvas) return;
 
     const updateSize = (): void => {
-      const rect = canvas.parentElement?.getBoundingClientRect()
-      if (!rect) return
+      const rect = canvas.parentElement?.getBoundingClientRect();
+      if (!rect) return;
 
-      setWidth(rect.width)
-      setHeight(rect.height)
-      canvas.width = rect.width
-      canvas.height = rect.height
-    }
+      setWidth(rect.width);
+      setHeight(rect.height);
+      canvas.width = rect.width;
+      canvas.height = rect.height;
+    };
 
-    updateSize()
-    window.addEventListener('resize', updateSize)
-    
-    return () => window.removeEventListener('resize', updateSize)
-  }, [])
+    updateSize();
+    window.addEventListener('resize', updateSize);
+
+    return () => window.removeEventListener('resize', updateSize);
+  }, []);
 
   // Draw the visualization
   useEffect(() => {
-    if (!width || !height || !canvasRef.current) return
-    
-    const canvas = canvasRef.current
-    const ctx = canvas.getContext('2d')
-    if (!ctx) return
-    
+    if (!width || !height || !canvasRef.current) return;
+
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
     // Clear canvas
-    ctx.clearRect(0, 0, width, height)
-    
+    ctx.clearRect(0, 0, width, height);
+
     // Setup coordinate system with (0,0) at center
-    const scale = Math.min(width, height) / 2.5
-    const centerX = width / 2
-    const centerY = height / 2
-    
+    const scale = Math.min(width, height) / 2.5;
+    const centerX = width / 2;
+    const centerY = height / 2;
+
     // Draw axes
-    ctx.beginPath()
-    ctx.strokeStyle = '#ccc'
-    ctx.lineWidth = 1
-    
+    ctx.beginPath();
+    ctx.strokeStyle = '#ccc';
+    ctx.lineWidth = 1;
+
     // x-axis
-    ctx.moveTo(0, centerY)
-    ctx.lineTo(width, centerY)
-    
+    ctx.moveTo(0, centerY);
+    ctx.lineTo(width, centerY);
+
     // y-axis
-    ctx.moveTo(centerX, 0)
-    ctx.lineTo(centerX, height)
-    
-    ctx.stroke()
-    
+    ctx.moveTo(centerX, 0);
+    ctx.lineTo(centerX, height);
+
+    ctx.stroke();
+
     // Draw unit marks on axes
-    ctx.fillStyle = '#888'
-    ctx.textAlign = 'center'
-    ctx.textBaseline = 'middle'
-    
+    ctx.fillStyle = '#888';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+
     // x-axis marks
     for (let i = -1; i <= 1; i += 0.5) {
-      if (i === 0) continue
-      const x = centerX + i * scale
-      ctx.fillText(i.toString(), x, centerY + 15)
-      
-      ctx.beginPath()
-      ctx.moveTo(x, centerY - 5)
-      ctx.lineTo(x, centerY + 5)
-      ctx.stroke()
+      if (i === 0) continue;
+      const x = centerX + i * scale;
+      ctx.fillText(i.toString(), x, centerY + 15);
+
+      ctx.beginPath();
+      ctx.moveTo(x, centerY - 5);
+      ctx.lineTo(x, centerY + 5);
+      ctx.stroke();
     }
-    
+
     // y-axis marks
     for (let i = -1; i <= 1; i += 0.5) {
-      if (i === 0) continue
-      const y = centerY - i * scale
-      ctx.fillText(i.toString(), centerX - 15, y)
-      
-      ctx.beginPath()
-      ctx.moveTo(centerX - 5, y)
-      ctx.lineTo(centerX + 5, y)
-      ctx.stroke()
+      if (i === 0) continue;
+      const y = centerY - i * scale;
+      ctx.fillText(i.toString(), centerX - 15, y);
+
+      ctx.beginPath();
+      ctx.moveTo(centerX - 5, y);
+      ctx.lineTo(centerX + 5, y);
+      ctx.stroke();
     }
-    
+
     // Draw the Lk-norm boundary
-    ctx.beginPath()
-    ctx.strokeStyle = '#646cff'
-    ctx.lineWidth = 2
-    
-    const numPoints = 360
-    let first = true
-    
+    ctx.beginPath();
+    ctx.strokeStyle = '#646cff';
+    ctx.lineWidth = 2;
+
+    const numPoints = 360;
+    let first = true;
+
     for (let angle = 0; angle <= 2 * Math.PI; angle += (2 * Math.PI) / numPoints) {
       // Start with a point on the unit circle
-      let x = Math.cos(angle)
-      let y = Math.sin(angle)
-      
+      let x = Math.cos(angle);
+      let y = Math.sin(angle);
+
       // Calculate the scaling factor to make ||x||_k = 1
-      const currNorm = calculateLkNorm(x, y, k)
-      const scaleFactor = 1 / currNorm
-      
+      const currNorm = calculateLkNorm([x, y], k);
+      const scaleFactor = 1 / currNorm;
+
       // Scale the point to be on the Lk norm boundary
-      x *= scaleFactor
-      y *= scaleFactor
-      
+      x *= scaleFactor;
+      y *= scaleFactor;
+
       // Convert to canvas coordinates
-      const canvasX = centerX + x * scale
-      const canvasY = centerY - y * scale
-      
+      const canvasX = centerX + x * scale;
+      const canvasY = centerY - y * scale;
+
       if (first) {
-        ctx.moveTo(canvasX, canvasY)
-        first = false
+        ctx.moveTo(canvasX, canvasY);
+        first = false;
       } else {
-        ctx.lineTo(canvasX, canvasY)
+        ctx.lineTo(canvasX, canvasY);
       }
     }
-    
-    ctx.closePath()
-    ctx.stroke()
-    
-    // Add k value label
-    ctx.fillStyle = '#000'
-    ctx.font = '16px Arial'
-    ctx.textAlign = 'left'
-    ctx.textBaseline = 'top'
-    ctx.fillText(`L${k.toFixed(1)}-norm boundary`, 10, 10)
-    
-  }, [width, height, k])
-  
-  return (
-    <canvas 
-      ref={canvasRef} 
-      style={{ width: '100%', height: '100%' }}
-    />
-  )
-}
 
-export default NormVisualization2D
+    ctx.closePath();
+    ctx.stroke();
+
+    // Add k value label
+    ctx.fillStyle = '#000';
+    ctx.font = '16px Arial';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+    ctx.fillText(`L${k.toFixed(1)}-norm boundary`, 10, 10);
+  }, [width, height, k]);
+
+  return <canvas ref={canvasRef} style={{ width: '100%', height: '100%' }} />;
+};
+
+export default NormVisualization2D;
