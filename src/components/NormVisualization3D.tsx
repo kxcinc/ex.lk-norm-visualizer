@@ -1,7 +1,8 @@
-import { useRef, useMemo } from 'react'
-import { Canvas, useFrame } from '@react-three/fiber'
-import { OrbitControls, Text } from '@react-three/drei'
-import * as THREE from 'three'
+import { OrbitControls, Text } from "@react-three/drei";
+import { Canvas, useFrame } from "@react-three/fiber";
+import { useMemo, useRef } from "react";
+import * as THREE from "three";
+import { calculateLkNorm } from "../utils/mathUtils";
 
 interface LkNormSurfaceProps {
   k: number;
@@ -9,67 +10,52 @@ interface LkNormSurfaceProps {
 
 // Helper component to generate the Lk-norm boundary in 3D
 const LkNormSurface: React.FC<LkNormSurfaceProps> = ({ k }) => {
-  const meshRef = useRef<THREE.Mesh>(null)
-  
+  const meshRef = useRef<THREE.Mesh>(null);
+
   // Generate the surface geometry
   const geometry = useMemo(() => {
-    // Calculate Lk-norm for a point
-    const calculateLkNorm = (x: number, y: number, z: number, k: number): number => {
-      return Math.pow(
-        Math.pow(Math.abs(x), k) + 
-        Math.pow(Math.abs(y), k) + 
-        Math.pow(Math.abs(z), k), 
-        1/k
-      )
-    }
-    
     // Parameters for surface generation
-    const resolution = 40
-    const geometry = new THREE.IcosahedronGeometry(1, resolution)
-    
+    const resolution = 40;
+    const geometry = new THREE.IcosahedronGeometry(1, resolution);
+
     // Modify each vertex to be on the Lk-norm boundary
-    const positions = geometry.attributes.position.array
-    
+    const positions = geometry.attributes.position.array;
+
     for (let i = 0; i < positions.length; i += 3) {
-      const x = positions[i] as number
-      const y = positions[i + 1] as number
-      const z = positions[i + 2] as number
-      
+      const x = positions[i] as number;
+      const y = positions[i + 1] as number;
+      const z = positions[i + 2] as number;
+
       // Calculate the current norm value
-      const normValue = calculateLkNorm(x, y, z, k)
-      
+      const normValue = calculateLkNorm([x, y, z], k);
+
       // Scale to be on the boundary where ||x||^k_k = 1
-      const scaleFactor = 1 / normValue
-      
-      positions[i] = x * scaleFactor
-      positions[i + 1] = y * scaleFactor
-      positions[i + 2] = z * scaleFactor
+      const scaleFactor = 1 / normValue;
+
+      positions[i] = x * scaleFactor;
+      positions[i + 1] = y * scaleFactor;
+      positions[i + 2] = z * scaleFactor;
     }
-    
-    geometry.attributes.position.needsUpdate = true
-    geometry.computeVertexNormals()
-    
-    return geometry
-  }, [k])
-  
+
+    geometry.attributes.position.needsUpdate = true;
+    geometry.computeVertexNormals();
+
+    return geometry;
+  }, [k]);
+
   // Slowly rotate the mesh
   useFrame(() => {
     if (meshRef.current) {
-      meshRef.current.rotation.y += 0.001
+      meshRef.current.rotation.y += 0.001;
     }
-  })
-  
+  });
+
   return (
     <mesh ref={meshRef} geometry={geometry}>
-      <meshStandardMaterial 
-        color="#646cff" 
-        side={THREE.DoubleSide}
-        transparent
-        opacity={0.8}
-      />
+      <meshStandardMaterial color="#646cff" side={THREE.DoubleSide} transparent opacity={0.8} />
     </mesh>
-  )
-}
+  );
+};
 
 // Axis component
 const Axes: React.FC = () => {
@@ -78,32 +64,47 @@ const Axes: React.FC = () => {
       {/* X-axis */}
       <line>
         <bufferGeometry attach="geometry">
-          <float32BufferAttribute attach="attributes-position" args={[[-1.5, 0, 0, 1.5, 0, 0], 3]} />
+          <float32BufferAttribute
+            attach="attributes-position"
+            args={[[-1.5, 0, 0, 1.5, 0, 0], 3]}
+          />
         </bufferGeometry>
         <lineBasicMaterial attach="material" color="red" />
       </line>
-      <Text position={[1.7, 0, 0]} fontSize={0.15} color="red">X</Text>
-      
+      <Text position={[1.7, 0, 0]} fontSize={0.15} color="red">
+        X
+      </Text>
+
       {/* Y-axis */}
       <line>
         <bufferGeometry attach="geometry">
-          <float32BufferAttribute attach="attributes-position" args={[[0, -1.5, 0, 0, 1.5, 0], 3]} />
+          <float32BufferAttribute
+            attach="attributes-position"
+            args={[[0, -1.5, 0, 0, 1.5, 0], 3]}
+          />
         </bufferGeometry>
         <lineBasicMaterial attach="material" color="green" />
       </line>
-      <Text position={[0, 1.7, 0]} fontSize={0.15} color="green">Y</Text>
-      
+      <Text position={[0, 1.7, 0]} fontSize={0.15} color="green">
+        Y
+      </Text>
+
       {/* Z-axis */}
       <line>
         <bufferGeometry attach="geometry">
-          <float32BufferAttribute attach="attributes-position" args={[[0, 0, -1.5, 0, 0, 1.5], 3]} />
+          <float32BufferAttribute
+            attach="attributes-position"
+            args={[[0, 0, -1.5, 0, 0, 1.5], 3]}
+          />
         </bufferGeometry>
         <lineBasicMaterial attach="material" color="blue" />
       </line>
-      <Text position={[0, 0, 1.7]} fontSize={0.15} color="blue">Z</Text>
+      <Text position={[0, 0, 1.7]} fontSize={0.15} color="blue">
+        Z
+      </Text>
     </group>
-  )
-}
+  );
+};
 
 interface NormVisualization3DProps {
   k: number;
@@ -113,24 +114,18 @@ interface NormVisualization3DProps {
 const NormVisualization3D: React.FC<NormVisualization3DProps> = ({ k }) => {
   return (
     <Canvas camera={{ position: [2, 2, 2], fov: 50 }}>
-      <color attach="background" args={['#f8f8f8']} />
+      <color attach="background" args={["#f8f8f8"]} />
       <ambientLight intensity={0.5} />
       <directionalLight position={[10, 10, 5]} intensity={1.5} />
       <LkNormSurface k={k} />
       <Axes />
       <OrbitControls enablePan={true} enableZoom={true} enableRotate={true} />
-      <gridHelper args={[2, 10, '#888888', '#444444']} position={[0, -1.25, 0]} />
-      <Text
-        position={[0, 1.6, 0]}
-        fontSize={0.15}
-        color="black"
-        anchorX="center"
-        anchorY="top"
-      >
+      <gridHelper args={[2, 10, "#888888", "#444444"]} position={[0, -1.25, 0]} />
+      <Text position={[0, 1.6, 0]} fontSize={0.15} color="black" anchorX="center" anchorY="top">
         {`L${k.toFixed(1)}-norm boundary in R³`}
       </Text>
     </Canvas>
-  )
-}
+  );
+};
 
-export default NormVisualization3D
+export default NormVisualization3D;

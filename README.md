@@ -40,8 +40,14 @@ bun run dev
 # Type checking
 bun run typecheck
 
-# Lint code
+# Lint code with Biome
 bun run lint
+
+# Format code with Biome
+bun run format
+
+# Check and fix issues with Biome
+bun run check
 ```
 
 ### Deployment
