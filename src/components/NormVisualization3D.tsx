@@ -5,13 +5,6 @@ import * as THREE from "three";
 import { exportThreeSceneToPng } from "../utils/exportUtils";
 import { calculateLkNorm } from "../utils/mathUtils";
 
-// Helper function to detect test environment
-const isTestEnvironment = (): boolean => {
-  return typeof window !== 'undefined' &&
-    (window.navigator.userAgent.includes("Playwright") ||
-     window.navigator.userAgent.includes("HeadlessChrome"));
-};
-
 interface LkNormSurfaceProps {
   k: number;
   fixedRotation?: { x?: number; y?: number; z?: number };
@@ -158,13 +151,15 @@ const NormVisualization3D: React.FC<NormVisualization3DProps> = ({ k, fixedRotat
   };
 
   return (
-    <div style={{
-      position: "relative",
-      width: "100%",
-      height: "100%",
-      display: "block",  // Ensure consistent display
-      overflow: "hidden" // Prevent scrollbars during resize
-    }}>
+    <div
+      style={{
+        position: "relative",
+        width: "100%",
+        height: "100%",
+        display: "block", // Ensure consistent display
+        overflow: "hidden", // Prevent scrollbars during resize
+      }}
+    >
       <Canvas
         camera={{ position: [2, 2, 2], fov: 50 }}
         style={{ width: "100%", height: "100%" }} // Ensure canvas fills container
@@ -180,7 +175,6 @@ const NormVisualization3D: React.FC<NormVisualization3DProps> = ({ k, fixedRotat
           enablePan={true}
           enableZoom={true}
           enableRotate={fixedRotation === undefined} // Disable rotation controls if fixedRotation is provided
-          makeDefault // Make this the default controls
         />
         <gridHelper args={[2, 10, "#888888", "#444444"]} position={[0, -1.25, 0]} />
         <Text position={[0, 1.6, 0]} fontSize={0.15} color="black" anchorX="center" anchorY="top">

@@ -19,14 +19,14 @@ export default defineConfig({
       threshold: 0.1,
       animations: "disabled",
     },
-    timeout: 15000,          // Increase timeout for screenshot comparisons
+    timeout: 15000, // Increase timeout for screenshot comparisons
   },
   projects: [
     {
       name: "chromium",
       use: {
         ...devices["Desktop Chrome"],
-        viewport: { width: 1280, height: 720 } // Fixed viewport for consistency
+        viewport: { width: 1280, height: 720 }, // Fixed viewport for consistency
       },
     },
     // Firefox is excluded due to inconsistent behavior with input range events
@@ -38,7 +38,7 @@ export default defineConfig({
       name: "webkit",
       use: {
         ...devices["Desktop Safari"],
-        viewport: { width: 1280, height: 720 } // Fixed viewport for consistency
+        viewport: { width: 1280, height: 720 }, // Fixed viewport for consistency
       },
     },
   ],

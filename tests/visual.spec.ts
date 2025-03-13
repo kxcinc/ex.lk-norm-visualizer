@@ -1,15 +1,15 @@
-import {expect, test} from "@playwright/test";
-import * as fs from 'fs';
-import * as path from 'path';
+import * as fs from "node:fs";
+import * as path from "node:path";
+import { type Page, expect, test } from "@playwright/test";
 
 // Ensure snapshots directory exists
-const snapshotsDir = path.join(process.cwd(), 'tests/snapshots');
+const snapshotsDir = path.join(process.cwd(), "tests/snapshots");
 if (!fs.existsSync(snapshotsDir)) {
   fs.mkdirSync(snapshotsDir, { recursive: true });
 }
 
 // Helper function to ensure 3D visualization is stable for screenshots
-async function stabilize3DVisualization(page: any) {
+async function stabilize3DVisualization(page: Page) {
   // Check if the fix rotation button exists (we're in 3D mode)
   const fixRotationButton = page.locator("[data-testid='toggle-rotation-button']");
   const buttonVisible = await fixRotationButton.isVisible().catch(() => false);
@@ -19,12 +19,12 @@ async function stabilize3DVisualization(page: any) {
     await fixRotationButton.click();
 
     // Force a small wait to ensure any animations or transitions are complete
-    await page.evaluate(() => new Promise(resolve => setTimeout(resolve, 250)));
+    await page.evaluate(() => new Promise((resolve) => setTimeout(resolve, 250)));
   }
 }
 
 // Helper function to set slider to a specific value and verify it took effect
-async function setSliderValue(page: any, value: number) {
+async function setSliderValue(page: Page, value: number) {
   const slider = page.locator("input[type='range']");
   await slider.evaluate((el: HTMLInputElement, val: number) => {
     el.value = val.toFixed(1);
@@ -57,14 +57,14 @@ async function setSliderValue(page: any, value: number) {
 
     // Check if k value was applied correctly
     if (actualValue) {
-      expect(parseFloat(actualValue)).toBeCloseTo(value, 1);
+      expect(Number.parseFloat(actualValue)).toBeCloseTo(value, 1);
     }
   } catch (error) {
     console.warn("Could not verify k value, continuing test", error);
   }
 }
 
-test.describe.configure({ mode: 'parallel' });
+test.describe.configure({ mode: "parallel" });
 test.describe("Visual Regression Testing", () => {
   // Test 2D visualization at specific k values
   const kValues2D = [1, 2, 5];
@@ -89,7 +89,7 @@ test.describe("Visual Regression Testing", () => {
         if (element) {
           const kValue = await element.getAttribute("data-k-value");
           if (kValue) {
-            expect(parseFloat(kValue)).toBeCloseTo(k, 1);
+            expect(Number.parseFloat(kValue)).toBeCloseTo(k, 1);
           }
         }
       } catch (error) {
@@ -127,7 +127,7 @@ test.describe("Visual Regression Testing", () => {
         if (element) {
           const kValue = await element.getAttribute("data-k-value");
           if (kValue) {
-            expect(parseFloat(kValue)).toBeCloseTo(k, 1);
+            expect(Number.parseFloat(kValue)).toBeCloseTo(k, 1);
           }
         }
       } catch (error) {

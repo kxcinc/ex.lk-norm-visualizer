@@ -1,4 +1,4 @@
-import { type ChangeEvent, useState, useEffect } from "react";
+import { type ChangeEvent, useState } from "react";
 import "./App.css";
 import NormVisualization2D from "./components/NormVisualization2D";
 import NormVisualization3D from "./components/NormVisualization3D";
@@ -8,7 +8,9 @@ type TabType = "2d" | "3d";
 function App(): React.ReactNode {
   const [k, setK] = useState<number>(2);
   const [activeTab, setActiveTab] = useState<TabType>("2d");
-  const [fixedRotation, setFixedRotation] = useState<{ x: number, y: number, z: number } | undefined>(undefined);
+  const [fixedRotation, setFixedRotation] = useState<
+    { x: number; y: number; z: number } | undefined
+  >(undefined);
   const [isRotationFixed, setIsRotationFixed] = useState<boolean>(false);
 
   // Toggle fixed rotation
@@ -87,10 +89,17 @@ function App(): React.ReactNode {
         </button>
       </div>
 
-      <div className="visualization-container" style={activeTab === "2d" ? undefined : {
-        width: "600px",
-        height: "500px",
-      }}>
+      <div
+        className="visualization-container"
+        style={
+          activeTab === "2d"
+            ? undefined
+            : {
+                width: "600px",
+                height: "500px",
+              }
+        }
+      >
         {activeTab === "2d" ? (
           <NormVisualization2D k={k} />
         ) : (
