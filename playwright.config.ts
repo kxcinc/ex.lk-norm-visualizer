@@ -21,6 +21,9 @@ export default defineConfig({
     },
     timeout: 15000, // Increase timeout for screenshot comparisons
   },
+  // Use platform-agnostic snapshot names (no OS suffix)
+  snapshotPathTemplate:
+    "{snapshotDir}/{testFileDir}/{testFileName}-snapshots/{arg}{-projectName}{ext}",
   projects: [
     {
       name: "chromium",
