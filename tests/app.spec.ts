@@ -35,7 +35,7 @@ test.describe("Lk-Norm Visualizer", () => {
     
     // Get the initial k value
     const initialKText = await page.locator("label[for='k-value']").textContent();
-    const initialK = initialKText ? parseFloat(initialKText.split(":")[1].trim()) : 0;
+    const initialK = initialKText ? Number.parseFloat(initialKText.split(":")[1].trim()) : 0;
     
     // Move slider to a new position
     const slider = page.locator("input[type='range']");
@@ -50,7 +50,7 @@ test.describe("Lk-Norm Visualizer", () => {
     
     // Verify that the k value has changed from initial value (don't check for exact value)
     const newKText = await page.locator("label[for='k-value']").textContent();
-    const newK = newKText ? parseFloat(newKText.split(":")[1].trim()) : 0;
+    const newK = newKText ? Number.parseFloat(newKText.split(":")[1].trim()) : 0;
     expect(newK).not.toEqual(initialK);
   });
 });

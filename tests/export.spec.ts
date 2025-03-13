@@ -23,7 +23,7 @@ test.describe("Export Functionality", () => {
     await expect(pngButton).toBeVisible();
   });
 
-  test("should trigger download when export PNG is clicked in 2D view", async ({ page, context }) => {
+  test("should trigger download when export PNG is clicked in 2D view", async ({ page }) => {
     await page.goto("/");
     
     // Setup download listener with longer timeout
