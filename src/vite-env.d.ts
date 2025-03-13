@@ -1,7 +1,7 @@
 /// <reference types="vite/client" />
 
 declare module '*.svg' {
-  import React = require('react');
+  import * as React from 'react';
   export const ReactComponent: React.FC<React.SVGProps<SVGSVGElement>>;
   const src: string;
   export default src;
@@ -13,23 +13,24 @@ declare module '*.css' {
 }
 
 declare module '@react-three/drei' {
-  export const Text: React.ComponentType<any>;
-  export const OrbitControls: React.ComponentType<any>;
-  export const useHelper: any;
+  export const Text: React.ComponentType<React.PropsWithChildren<unknown>>;
+  export const OrbitControls: React.ComponentType<unknown>;
+  export const useHelper: unknown;
 }
 
+// Three.js JSX elements
 declare namespace JSX {
   interface IntrinsicElements {
-    'float32BufferAttribute': any;
-    'line': any;
-    'bufferGeometry': any;
-    'lineBasicMaterial': any;
-    'mesh': any;
-    'meshStandardMaterial': any;
-    'group': any;
-    'gridHelper': any;
-    'color': any;
-    'directionalLight': any;
-    'ambientLight': any;
+    'float32BufferAttribute': unknown;
+    'line': unknown;
+    'bufferGeometry': unknown;
+    'lineBasicMaterial': unknown;
+    'mesh': unknown;
+    'meshStandardMaterial': unknown;
+    'group': unknown;
+    'gridHelper': unknown;
+    'color': unknown;
+    'directionalLight': unknown;
+    'ambientLight': unknown;
   }
 }
