@@ -17,7 +17,7 @@ An interactive visualization tool for Lk-norm boundaries in R² and R³ spaces, 
 
 The application is available at:
 - [lk-norm-visualizer.pages.dev](https://lk-norm-visualizer.pages.dev) (Cloudflare Pages)
-- [lk-norm-visualizer.ex.bykxc.app](https://lk-norm-visualizer.ex.bykxc.app) (Custom Domain)
+- ~[lk-norm-visualizer.ex.bykxc.app](https://lk-norm-visualizer.ex.bykxc.app) (Custom Domain)~
 
 ## Repository
 
